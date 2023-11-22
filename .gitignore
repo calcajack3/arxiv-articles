@@ -6,6 +6,7 @@ venv
 
 #ignore .env file
 .env
+.env.*
 
 #ignore python cache
 __pycache__
