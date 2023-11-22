@@ -1,6 +1,5 @@
 import urllib.request
 from xml.etree import cElementTree as ET
-from typing import List, Tuple
 
 # Function to fetch XML data from a URL
 
@@ -13,7 +12,7 @@ def fetch_xml_data(url: str) -> str:
 # Function to extract titles and summaries from XML data
 
 
-Article = Tuple[str, str, str]
+Article = tuple[str, str, str]
 
 
 def extract_titles_and_summaries(xml_data: str) -> List[Article]:
@@ -40,7 +39,7 @@ def extract_titles_and_summaries(xml_data: str) -> List[Article]:
 # Function to get papers from a URL
 
 
-def get_papers(url: str) -> List[Tuple[str, str, str]]:
+def get_papers(url: str) -> list[tuple[str, str, str]]:
     xml_data = fetch_xml_data(url)
     titles_summaries = extract_titles_and_summaries(xml_data)
     return titles_summaries
