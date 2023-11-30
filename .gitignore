@@ -10,3 +10,6 @@ venv
 
 #ignore python cache
 __pycache__
+
+# ignore db
+db

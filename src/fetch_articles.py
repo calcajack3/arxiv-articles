@@ -15,11 +15,11 @@ def fetch_xml_data(url: str) -> str:
 Article = tuple[str, str, str]
 
 
-def extract_titles_and_summaries(xml_data: str) -> List[Article]:
+def extract_titles_and_summaries(xml_data: str) -> list[Article]:
     root = ET.fromstring(xml_data)
 
     # Initialize an empty list to store the tuples of title, summary, and link
-    title_summary_pairs: List[Article] = []
+    title_summary_pairs: list[Article] = []
 
     # Iterate over each entry in the XML data
     for entry in root.findall('.//{http://www.w3.org/2005/Atom}entry'):
@@ -27,7 +27,7 @@ def extract_titles_and_summaries(xml_data: str) -> List[Article]:
         title = entry.find('.//{http://www.w3.org/2005/Atom}title').text or ""
         summary = entry.find(
             './/{http://www.w3.org/2005/Atom}summary').text or ""
-        summary = summary.replace('\n', ' ')
+        summary = summary.replace('\n', ' ').strip()
         link = entry.find(
             './/{http://www.w3.org/2005/Atom}link').attrib['href']
 
