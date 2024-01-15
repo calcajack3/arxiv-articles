@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body
+        style="font-family: Helvetica, Arial, sans-serif; background-color: rgb(255, 254, 225);padding-top: 1rem; padding-bottom: 1rem;">
+        <div style="max-width: 600px; margin: auto;">
+
+            <div style="text-align: center;">
+                <div
+                    style="font-size: xx-large; font-weight: 800;">AI
+                    Newsletter</div>
+                <div style="font-size: large; padding: 1rem;">Hi, today is {{
+                    date
+                    }} and here is the
+                    seleciton of the top {{ n_selected_articles }}
+                    articles from Arxiv.org for you!</div>
+            </div>
+
+            <div style="display: grid;">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>

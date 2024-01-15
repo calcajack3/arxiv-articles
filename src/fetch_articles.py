@@ -1,45 +1,83 @@
 import urllib.request
 from xml.etree import cElementTree as ET
 
+# Define the Article class
+class Article:
+    def __init__(self, title: str, abstract: str, link: str):
+        self.title = title
+        self.abstract = abstract
+        self.link = link
+        self.id = link.split('/')[-1]
+        self.summary = ""
+    
+    @classmethod
+    def from_document(cls, document):
+        """
+        Alternative constructor to create an Article object from a document.
+
+        :param document: A document object.
+        :return: An instance of Article.
+        """
+        try:
+            title = document.metadata['title']
+            abstract = document.page_content
+            link = document.metadata['link']
+        except AttributeError:
+            try:
+                title = document['metadatas'][0]['title']
+                abstract = document['documents'][0]
+                link = document['metadatas'][0]['link']
+            except:
+                return None
+        return cls(title, abstract, link)
+    
+    def set_summary(self, summary: str):
+        """
+        Sets the summary of the article.
+
+        :param summary: A summary of the article.
+        """
+        self.summary = summary
+
 # Function to fetch XML data from a URL
-
-
 def fetch_xml_data(url: str) -> str:
+    """
+    Fetches XML data from a URL and returns it as a string.
+    :param url: URL to fetch XML data from.
+    :return: XML data as a string.
+    """
     data = urllib.request.urlopen(url)
     xml_data = data.read().decode('utf-8')
     return xml_data
 
-# Function to extract titles and summaries from XML data
-
-
-Article = tuple[str, str, str]
-
-
+# Function to extract titles, abstracts, and links from XML data
 def extract_titles_and_summaries(xml_data: str) -> list[Article]:
+    """
+    Extracts titles, abstracts, and links from XML data and returns them as a list of Article objects.
+    :param xml_data: XML data as a string.
+    :return: List of Article objects.
+    """
     root = ET.fromstring(xml_data)
 
-    # Initialize an empty list to store the tuples of title, summary, and link
-    title_summary_pairs: list[Article] = []
+    articles = []
 
-    # Iterate over each entry in the XML data
     for entry in root.findall('.//{http://www.w3.org/2005/Atom}entry'):
-        # Extract the title and summary text from each entry
         title = entry.find('.//{http://www.w3.org/2005/Atom}title').text or ""
-        summary = entry.find(
-            './/{http://www.w3.org/2005/Atom}summary').text or ""
-        summary = summary.replace('\n', ' ').strip()
-        link = entry.find(
-            './/{http://www.w3.org/2005/Atom}link').attrib['href']
+        abstract = entry.find('.//{http://www.w3.org/2005/Atom}summary').text or ""
+        abstract = abstract.replace('\n', ' ').strip()
+        link = entry.find('.//{http://www.w3.org/2005/Atom}link').attrib['href']
 
-        # Append the tuple (title, summary, link) to the list
-        title_summary_pairs.append((title, summary, link))
+        articles.append(Article(title, abstract, link))
 
-    return title_summary_pairs
+    return articles
 
 # Function to get papers from a URL
-
-
-def get_papers(url: str) -> list[tuple[str, str, str]]:
+def get_papers(url: str) -> list[Article]:
+    """
+    Fetches XML data from a URL and returns a list of Article objects.
+    :param url: URL to fetch XML data from.
+    :return: List of Article objects.
+    """
     xml_data = fetch_xml_data(url)
-    titles_summaries = extract_titles_and_summaries(xml_data)
-    return titles_summaries
+    articles = extract_titles_and_summaries(xml_data)
+    return articles
